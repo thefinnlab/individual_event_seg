@@ -8,8 +8,8 @@ The structure of this directory is as follows:
 
 *"event_seg"*
 - This folder holds the code used to generate individual event boundaries - "FILE NAME HERE"
-- This relies on a the median number of events that were identified in our 100 ROIs. To aid in replication, we saved out a file with this number which is available in data. 
-- This folder also holds code to compute the "alignment" matrices [ss_matchz.py] between pairs of subjects. This relies on the boundaries saved out from the file above. We provide a sample ROI's matrix in our data folder to aid others in using this code for their own analyses. 
+- This relies on a the median number of events that were identified in our 100 ROIs. To aid in replication, we saved out a file with this number which is available in the data folder under the same name. 
+- This folder also holds code to compute the "alignment" matrices [ss_matchz.py] between pairs of subjects. This relies on the boundaries saved out from the file above. We provide matrices for each ROI in our data folder to aid others in using this code for their own analyses [matchz_matrices_concat.npy]. 
 
 *"fig_2_4_neural_event_boundaries"*
 - This folder holds code used to generate our linear models that were used to regress out the effects of motion and memory. We provide the regressors in our data folder. We also provide the outputs of our linear models that were used to generate our figures. 
