@@ -1,5 +1,5 @@
 # individual_event_seg
-This repository contains code and experimental materials for the publication "name TBD"
+This repository contains code and experimental materials for the publication "Individual variability in neural event segmentation reflects stimulus content and interpretation"
 
 The structure of this directory is as follows:
 - There is a data and code folder that are typically labeled by their corresponding figure (see below). 
