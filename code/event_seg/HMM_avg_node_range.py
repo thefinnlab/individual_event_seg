@@ -1,5 +1,5 @@
 ''' Note the median of the outputs from this function are saved out in data. Just including it to see how we fit the HMM. Code inspired by: https://naturalistic-data.org/content/Event_Segmentation.html'''
-
+''' If you are interested in running this function, you will need subject by TR by voxel arrays.'''
 
 import sys 
 import os    

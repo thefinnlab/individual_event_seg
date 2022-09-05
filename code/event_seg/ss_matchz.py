@@ -1,5 +1,6 @@
 '''This script takes the boundaries for each individual that were saved out and generates a z-score subject-by-subject "alignment" matrix'''
-
+'''The boundaries are available here:  ('../../data/event_seg/boundary_locations_per_individual.npy')'''
+'''The alignment matrices are available here ('../../data/event_seg/matchz_matrices_concat.npy')'''
 
 import warnings
 import sys 
@@ -42,6 +43,7 @@ node_list = range(int(sys.argv[2]),int(sys.argv[2])+1) #options - 100 nodes
 subs = list(range(0,43)) 
 A = np.load(os.path.join(schaeffer_dir + "%s_node1_movie_cutTRs_7N.npy") %(mov),allow_pickle=True)
 nTRs = A.shape[1]
+#this just gets the number of TRs per movie
 
 def match_loop(nodes):
     nodes = [nodes]

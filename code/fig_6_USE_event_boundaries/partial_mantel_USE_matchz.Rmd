@@ -1,0 +1,39 @@
+---
+title: "partial_Mantle"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(vegan)
+library(pracma)
+library(dplyr)
+library(readr)
+```
+
+## START HERE
+```{r}
+
+info_table <- read.csv("../../data/fig_6_USE_event_boundaries/_partial_mantel_inputs/iteration_nodes_USE_matchz.csv")
+
+p_list <- vector("list", 100)
+r_list <- vector("list", 100)
+
+for (node in 1:100) {
+  var = paste('matchz_',node,sep="")
+  a <- mantel(squareform(as.numeric(unlist(info_table[var]))), squareform(info_table$USE), method="spearman", permutations=10000)
+    p_list[[node]] <- a$signif
+    r_list[[node]] <- a$statistic
+}
+
+df = data.frame(cbind(as.numeric(p_list),as.numeric(r_list)))
+df = rename(df, pval = X1, rval = X2)
+
+#write_csv(df,"iteration_mantel_r_p_R_generated.csv")
+
+```
+
+

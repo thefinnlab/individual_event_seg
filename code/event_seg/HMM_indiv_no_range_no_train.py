@@ -1,4 +1,7 @@
-import warnings
+''' Note: to run this function you need subject x TR x voxel arrays for each node. You can also use the number of events per ROI that are available in data.'''
+''' The boundaries per individual per ROI that were generated from this function is what was used in the ss_matchz.py script to generate subject-by-subject alignment matrices. We provide these matrices in the data. '''
+''' Even though we are using absolute paths here, we also provide a dictionary that combined the outputs from this script - found here: event_seg/boundary_locations_per_individual.npy'''
+
 import sys
 import os
 from functools import reduce
@@ -32,14 +35,6 @@ def fun_avg(nodes,sub,results,bounds_sm):
 
     for node in nodes:
         
-        if mov == 'growth':
-            max_allowed = 100
-        elif mov == 'lemonade':
-            max_allowed = 90
-        elif mov == 'defeat':
-            max_allowed = 95
-        elif mov == 'iteration':
-            max_allowed = 150
         
         
         
@@ -92,6 +87,7 @@ def fun_avg(nodes,sub,results,bounds_sm):
         bounds_s = np.where(np.diff(np.argmax(HMMsm.segments_[0], axis = 1)))[0]
         bounds_sm[node] = bounds_s
         print('bounds_s',bounds_s)
+        #This output is what is used in ss_matchz.py
         np.save(schaefer_dir_local + '/_individual_subjs_HMM/'+'%s/sub%s_event_boundaries_sm_%s_HMM_zscore.npy' %(mov,sub,mov),bounds_sm)
         
         ### events per ROI
