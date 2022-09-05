@@ -25,3 +25,6 @@ The structure of this directory is as follows:
 - We also provide the code used to generate the USE matrices - "Fig_6.USE_transcript_similarity". 
 - We also provide the cleaned recall transcripts in the corresponding data folder ["_all_narr_files"].
  
+
+**experimental_files:**
+- This folder contains the code used to run Experiment 2 - auxilliary behavioral experiment and the corresponding code used to administer the study (.html file) using JsPsych. Note JsPsych 7 was used to run this experiment. There is also a .txt file providing more detail on what questions were used.
