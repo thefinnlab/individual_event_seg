@@ -1,0 +1,134 @@
+﻿1. Keyboard Response: “​​Press a space bar at the times at which you feel like a new scene is starting; these are points in the movie when there is a major change in topic, location, time, etc. Each ‘scene’ should be between 10 seconds and 3 minutes long."
+
+
+2. Free Recall: “During this section, you will have three minutes to say what you remember about the video. You can talk about characters, events, your opinions, or anything else that comes to mind. Try and fill the whole three minutes once the timer appears, and remember- there are no wrong answers!”
+
+
+3. Describing Characters: “Please give at least three adjectives to describe [character name].”
+   1. Movie Name: “Defeat”
+      1. Please give at least three adjectives to describe the mother.
+      2. Please give at least three adjectives to describe the sister.
+      3. Please give at least three adjectives to describe the brother.
+   2. Movie Name: “Growth”
+      1. Please give at least three adjectives to describe the mother.
+      2. Please give at least three adjectives to describe the older brother.
+      3. Please give at least three adjectives to describe the younger brother.
+      4. Please give at least three adjectives to describe the father.
+   3. Movie Name: “Lemonade”
+      1. Please give at least three adjectives to describe the machine.
+   4. Movie Name: “Iteration”
+      1. Please give at least three adjectives to describe the woman.
+      2. Please give at least three adjectives to describe the man.
+
+
+4. Multiple Choice Questions: “During this section, you will be presented with questions about the film. Each of these will be multiple choice, and you will have 12 seconds per question. These questions are so we can make sure you were paying attention during the video. Please answer each question to the best of your ability.”
+   1. Movie Name: “Defeat”
+      1. Who does the brother take a seat on the bus from?
+         1. His sister
+         2. A child with crutches
+         3. The teacher
+      2. What sport do the children play?
+         1. Soccer
+         2. Lacrosse
+         3. Track 
+      3. What does the brother do before he is called down for dinner and sees his sister there first?
+         1. He is taking a nap
+         2. He is playing video games
+         3. He is doing his homework
+      4. Why does the brother first suspect something weird is going on?
+         1. He hears noises from his sister’s room
+         2. The lights flicker on and off
+         3. He notices he doesn’t have as much food
+   2. Movie Name: “Growth”
+      1. What triggered the parents' first fight?
+         1. The process of renovating the house
+         2. The children making a mess
+         3. Forgetting Valentine's Day
+      2. What was the first indication of non-monogamy?
+         1. A bra on the floor
+         2. The mother isn't home after work
+         3. A woman is seen undressing in the window of the house across the street
+      3. At what holiday dinner does the father yell at the older son?
+         1. Thanksgiving
+         2. Halloween
+         3. Christmas
+      4. What does the younger brother do with the painting after he takes it off the wall?
+         1. He steals it
+         2. He burns it
+         3. He throws it away
+   3. Movie Name: “Lemonade”
+      1. What room did the video start in?
+         1. Kitchen
+         2. Living room
+         3. Bedroom
+      2. Which of the following was NOT used in the machine?
+         1. Stuffed animal
+         2. Dominoes
+         3. Plates 
+      3. How many neon fidget spinners are lined up before the slime drips from the cup?
+         1. 2
+         2. 3
+         3. 5
+      4. What was used most often in the video?
+         1. Balls
+         2. Legos
+         3. Lemons 
+   4. Movie Name: “Iteration”
+      1. What is the first thing that happens every time the woman wakes up?
+         1. The door opens
+         2. A glass falls off the table
+         3. She screams
+      2. What does the woman notice the first time she sees her past self?
+         1. A tattoo on the back of her neck
+         2. A tracking device
+         3. Her hair color
+      3. What happens to the cut in the tree
+         1. The wood begins to crumble
+         2. The wood bleeds
+         3. The cut heals itself
+      4. What does the woman do the cycle after the cut in the tree heals
+         1. She screams for help
+         2. She breaks the water glass
+         3. She goes back to sleep
+
+
+5. Emotion Questions: “During this section, you will be presented with questions related to a variety of emotions . Each question will use a sliding scale to rate how much you felt it during the process of watching the video, and you will have 10 seconds to answer each question. Please respond as honestly as possible- there are no wrong answers!”
+   1. How did you feel…. Scaling: “Not at all,” “Almost none, or very little,” “Less than normal,” “A normal amount,” “More than normal,” “A lot,” “The whole, or almost the whole, film.”
+      1. How happy did you feel while watching this video?
+      2. How surprised did you feel while watching this video?
+      3. How frustrated did you feel while watching this video?
+      4. How sad did you feel while watching this video?
+      5. How tense did you feel while watching this video?
+      6. How angry did you feel while watching this video?
+   2. “What was the overall intensity of the previous video, on a scale from calm to exciting? Note that 'intensity' here is independent of valence -- it's simply the intensity of the emotions depicted, regardless of whether they were positive or negative.” Scaling: “Very calm,” “Somewhat calm,” “Slightly calm,” “Neutral,” “Slightly exciting,” “Somewhat exciting,” “Very exciting.”
+   3. “What was the overall valence of the previous video, on a scale from positive to negative ? 'Positive' here might mean happy or comforting, while 'negative' might mean sad or angry.”  Scaling: “Very negative,” “Somewhat negative,” “Slightly negative,” “Neither positive or negative,” “Slightly positive,” “Somewhat positive,” “Very positive.”
+   4. How engaging did you find this video? Scaling: “Extremely unengaging,” “Somewhat engaging,” “Slightly unengaging,” “Neutral,” “Slightly engaging,” “Somewhat engaging,” “Extremely engaging.”
+
+
+6. Character Questions: “During this section, you will be presented with questions related to characters from the short film. Each question will use a sliding scale to rate different aspects of the characters, and you will have 10 seconds to answer each question. Please respond as honestly as possible- there are no wrong answers!” 
+   1. How much do you like…? Scaling: “Very negative,” “Dislike strongly,” “Dislike,” “Slightly dislike,” “Neutral,” “Slightly like,” “Like,” “Like strongly.”
+   2. How much did you identify with…? Scaling: “Didn’t identify at all,” “Didn’t identify well,” “Didn’t identify much,” “Not sure,” “Identified a little bit,” “Identified somewhat,” “Identified strongly.”
+      1. Movie Name: “Defeat”
+         1. How much do you like the mother?
+         2. How much do you like the sister?
+         3. How much do you like the brother?
+         4. How much did you identify with the mother?
+         5. How much did you identify with the sister?
+         6. How much did you identify with the brother?
+      2. Movie Name: “Growth”
+         1. How much do you like the mother?
+         2. How much do you like the older brother?
+         3. How much do you like the younger brother?
+         4. How much do you like the father?
+         5. How much did you identify with the mother?
+         6. How much did you identify with the older brother?
+         7. How much did you identify with the younger brother?
+         8. How much did you identify with the father?
+      3. Movie Name: “Lemonade”
+         1. How much do you like the machine?
+         2. How much did you identify with the machine?
+      4. Movie Name: “Iteration”
+         1. How much do you like the man?
+         2. How much do you like the woman?
+         3. How much did you identify with the woman?
+         4. How much did you identify with the man?

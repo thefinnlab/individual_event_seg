@@ -1,0 +1,1609 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>EventSeg- BehavioralExperiment</title>
+    <script src="jspsych-7.1.0/jspsych/dist/jspsych.js"></script>
+    
+   
+    <link rel="stylesheet" href="jspsych-7.1.0/jspsych/dist/jspsych.css" />
+     <script src="jspsych-7.1.0/jspsych/dist/plugin-preload.js"></script>
+     <script src="jspsych-7.1.0/jspsych/dist/plugin-video-keyboard-response.js"></script>
+     <script src="jspsych-7.1.0/jspsych/dist/plugin-html-button-response.js"></script>
+     <script src="jspsych-7.1.0/jspsych/dist/plugin-initialize-microphone.js"></script>
+     <script src="jspsych-7.1.0/jspsych/dist/plugin-html-audio-response.js"></script>
+     <script src="jspsych-7.1.0/jspsych/dist/plugin-survey-text.js"></script>
+     <script src="jspsych-7.1.0/jspsych/dist/plugin-survey-html-form.js"></script>
+     <script src="jspsych-7.1.0/jspsych/dist/plugin-instructions.js"></script>
+     <script src="jspsych-7.1.0/jspsych/dist/plugin-survey-multi-choice.js"></script>
+     <script src="jspsych-7.1.0/jspsych/dist/plugin-survey-likert.js"></script>
+     <script src="jspsych-7.1.0/jspsych/dist/plugin-html-keyboard-response.js"></script>
+
+
+
+
+
+
+     <script src="movie_op.js"></script>
+    <script src="questions.js"></script>
+    <style>
+    .jspsych-btn {margin-bottom: 10px;}
+  </style>
+</head>
+<body></body>
+
+<script>
+
+var movies = movies
+var participant = 1
+
+///////////////////////// PRACTICE TRIAL SET UP ///////////////////////
+var participant = {
+  type: jsPsychHtmlKeyboardResponse,
+  stimulus: '<p style="color: orange; font-size: 48px; font-weight: bold;">PARTICIPANT</p>',
+  prompt: "Experimenter: Enter participant number to continue>",
+  on_finish: function() {
+    var participant_id = jsPsych.data.get().first().values()[0].response;
+    alert(participant_id)
+  //   participant_id = data.response
+  // }
+}}
+
+
+
+var practice_trial1= {
+    type: jsPsychInstructions,
+    pages: [
+    '<h2>This next part is a practice trial to show you what you will have to do while watching the movies. The next page will provide more information. If you have any questions ask your experimenter.</h2>',
+    'The next page will show a movie. Press a space bar at the times at which you feel like a new scene is starting; these are points in the movie when there is a major change in topic, location, time, etc. Each \'scene\' should be between 10 seconds and 3 minutes long. These instructions will stay on the screen during the film. They will change <strong> color </strong> each time you press the space bar to let you know that you have demarcated an event.'
+
+  ],
+    show_clickable_nav: true
+}
+var practice_mov = {
+    type: jsPsychVideoKeyboardResponse,
+    stimulus: ["toast_trim.mp4"],
+    prompt: "<p>Press a space bar at the times at which you feel like a new scene is starting; these are points in the movie when there is a major change in topic, location, time, etc. Each \'scene\' should be between 10 seconds and 3 minutes long.</p>",
+    width: 1200,
+    height: 1200,
+
+    autoplay: true,
+    response_feedback: true, //Clara added
+    response_allowed_while_playing: true,
+    response_ends_trial: false,
+    trial_ends_after_video: true,
+  }
+var practice_trial2= {
+    type: jsPsychInstructions,
+    pages: [
+    'Let your experimenter know if you have any questions. It is crucial that you understand how to do this part of the task. After this section, you will be asked to use the microphone to talk about what you watched and then will be asked to answer a series of straightforward questions. We will skip those in this practice trial. Let your experimenter know when you are ready to begin the real experiment.'
+  ],
+    show_clickable_nav: true
+}
+
+
+
+
+
+//////////////////////// Defining functions and trials
+
+function shuffleArray(array) {
+  for (var i = array.length - 1; i > 0; i--) {
+    var j = Math.floor(Math.random() * (i + 1));
+    var temp = array[i];
+    array[i] = array[j];
+    array[j] = temp;
+  }
+  return array;
+}
+
+//shuffle
+movies = shuffleArray(movies)
+ console.log("movies:" + movies[0] + "," + movies[1] + "," + movies[2] + "," + movies[3])
+
+//defining clock function at the top so we can just refer to it each time we need it
+var clock_function = function(){
+          var wait_time = 15000; //60000 when want the full range // in milliseconds
+          var start_time = performance.now();
+          //document.querySelector('button').disabled = true;
+          var interval = setInterval(function(){
+          var time_left = wait_time - (performance.now() - start_time);
+          var minutes = Math.floor(time_left / 1000 / 60);
+          var seconds = Math.floor((time_left - minutes*1000*60)/1000);
+          var seconds_str = seconds.toString().padStart(2,'0');
+          document.querySelector('#clock').innerHTML = minutes + ':' + seconds_str
+          if(time_left <= 0){
+              document.querySelector('#clock').innerHTML = "0:00";
+              //document.querySelector('button').disabled = false;
+              clearInterval(interval);
+    }
+    },
+    250)
+          }
+
+var jsPsych = initJsPsych({
+    adapt_to_file_protocol: false,
+    override_safe_mode: true,
+    
+    on_finish: function() { jsPsych.data.displayData(); 
+      var participant_id = jsPsych.data.get().first().values()[0].response;
+      var date = new Date().toISOString().slice(0, 10)
+      alert(date)
+      jsPsych.data.get().localSave('csv','data/eventsegbehav_participant' + participant_id+ '_' + date + '.csv'); }
+
+
+//jsPsych.data.get().localSave('csv','data/eventsegbehav_participant' + jsPsych.timelineVariable(participant,"true") +'.csv'); }
+});
+
+
+///////// Instructions here: 
+var movie_instructions = {
+    type: jsPsychInstructions,
+    pages: [
+    '<h2>During this section, you will watch a video. Please make sure that you are paying attention</h2>',
+    'Press a space bar at the times at which you feel like a new scene is starting; these are points in the movie when there is a major change in topic, location, time, etc. Each \'scene\'  should be between 10 seconds and 3 minutes long. These instructions will stay on the screen during the film. They will change <strong> color </strong> each time you press the space bar to let you know that you have demarcated an event.'
+
+  ],
+    show_clickable_nav: true
+}
+
+var free_recall_instructions = {
+    type: jsPsychInstructions,
+    pages: [
+    'During this section, you will have <strong> three minutes to say what you remember about the video. </strong> You can talk about characters, events, your opinions, or anything else that comes to mind. Try and fill the whole three minutes once the timer appears, and remember- there are no wrong answers! <h3>You will now be asked to initiate the microphone</h3>'],
+    show_clickable_nav: true
+}
+
+var multiple_choice_instructions = {
+  type: jsPsychInstructions,
+    pages: [
+    'During this section, you will be presented with <strong>  questions about the film</strong>. Each of these will be multiple choice, and you will have 12 seconds per question. These questions are so we can make sure you were paying attention during the video. Please answer each question to the best of your ability.'],
+    show_clickable_nav: true
+}
+
+var emotion_choice_instructions = {
+  type: jsPsychInstructions,
+    pages: [
+    'During this section, you will be presented with <strong> questions related to a variety of emotions </strong>. Each question will use a sliding scale to rate how much you felt it during the process of watching the video, and you will have 10 seconds to answer each question. Please respond as honestly as possible- there are no wrong answers!'],
+    
+    show_clickable_nav: true
+}
+
+var character_ID_instructions = {
+  type: jsPsychInstructions,
+    pages: [
+    
+    'During this section, you will be presented with <strong>  questions related to characters </strong> from the short film. Each question will use a sliding scale to rate different aspects of the characters, and you will have 10 seconds to answer each question. Please respond as honestly as possible- there are no wrong answers! '],
+    show_clickable_nav: true
+}
+
+var experiment_starting = {
+  type: jsPsychInstructions,
+    pages: [
+    
+    'PRESS TO BEGIN THE FIRST MOVIE.'],
+    show_clickable_nav: true
+}
+
+
+var between_trials= {
+    type: jsPsychInstructions,
+    on_load: function(){
+          var wait_time = 30000 //when want the full range // in milliseconds
+          var start_time = performance.now();
+          //document.querySelector('button').disabled = true;
+          var interval = setInterval(function(){
+          var time_left = wait_time - (performance.now() - start_time);
+          var minutes = Math.floor(time_left / 1000 / 60);
+          var seconds = Math.floor((time_left - minutes*1000*60)/1000);
+          var seconds_str = seconds.toString().padStart(2,'0');
+          document.querySelector('#clock').innerHTML = minutes + ':' + seconds_str
+          if(time_left <= 0){
+              document.querySelector('#clock').innerHTML = "0:00";
+              //document.querySelector('button').disabled = false;
+              clearInterval(interval);
+    }
+    },
+    250)
+          }, 
+    pages: [ '<p>Time left: <span id="clock">1:00</span> </p>' + '<h1> START THE NEXT PART WHEN YOU ARE READY</h1>'
+
+    ],
+    show_clickable_nav: true
+}
+var welcome = {
+    type: jsPsychInstructions,
+    pages: [
+    '<h1> WELCOME</h1>'
+  ],
+    show_clickable_nav: true
+}
+var ty = {
+    type: jsPsychInstructions,
+    pages: [
+    '<h1> THANK YOU. Please notify the experimenter to do some debriefing questions. </h1>'
+  ],
+    show_clickable_nav: true
+}
+
+
+
+///// Initiation trials
+var pre_trial = {
+    type: jsPsychHtmlButtonResponse,
+    stimulus: '<div style="max-width:600px;"> </div>',
+    choices: ['continue']
+  }
+  
+var init_mic = {
+    type: jsPsychInitializeMicrophone
+  } 
+
+
+var demographic_trial = {
+  type: jsPsychSurveyMultiChoice,
+  questions: [
+    {
+      prompt: "<strong> How would you describe your gender? </strong>", 
+      name: 'gender', 
+      options: ['male', 'female', 'non-binary', 'other', 'do not wish to report'], 
+      required: true,
+      horizontal: true
+    }, 
+    {
+      prompt: "<strong> Are you of hispanic or latinx origin? </strong>", 
+      name: 'hispanic', 
+      options: ['Yes', 'No'], 
+      required: false,
+      horizontal: true
+    }, 
+    {
+      prompt: "<strong> How would you describe your race? </strong>", 
+      name: 'race', 
+      options: ['American Indian/Alaska Native', 'Asian', 'Native Hawaiian or Other Pacific Islander', 'Black or African American', 'White', 'More than one race', 'Do not wish to report'], 
+      required: true,
+      horizontal: true
+    }
+  ],
+};
+
+
+var free_recall = {
+	type: jsPsychHtmlAudioResponse, 
+	on_load: function(){
+          var wait_time = 180000 //when want the full range // in milliseconds
+          var start_time = performance.now();
+          //document.querySelector('button').disabled = true;
+          var interval = setInterval(function(){
+          var time_left = wait_time - (performance.now() - start_time);
+          var minutes = Math.floor(time_left / 1000 / 60);
+          var seconds = Math.floor((time_left - minutes*1000*60)/1000);
+          var seconds_str = seconds.toString().padStart(2,'0');
+          document.querySelector('#clock').innerHTML = minutes + ':' + seconds_str
+          if(time_left <= 0){
+              document.querySelector('#clock').innerHTML = "0:00";
+              //document.querySelector('button').disabled = false;
+              clearInterval(interval);
+    }
+    },
+    250)
+          }, //set to 3 minutes
+	stimulus: function(){
+		var clock = '<p>Time left: <span id="clock">1:00</span> </p>';
+		var statement = '<p> <strong> CURRENTLY RECORDING: </strong> During this section, you will have three minutes to say what you remember about the video. You can talk about characters, events, your opinions, or anything else that comes to mind. Try and fill the whole three minutes once the timer appears, and remember- there are no wrong answers!</p>' ;
+		return clock + statement
+		},
+	recording_duration: 180000,
+	done_button_label: "IF THE TIMER IS DONE: PRESS HERE TO END RECORDING",
+	
+  } 
+var debrief = {
+	type: jsPsychHtmlAudioResponse, 
+	stimulus: function(){
+		var statement = '<p> <strong> The experimenter will now ask you some debriefing questions about the experiment. </p>' ;
+		return statement
+		},
+	recording_duration: 180000,
+	done_button_label: "PRESS WHEN DONE",
+	
+  } 
+
+
+var trial_1 = {
+    type: jsPsychVideoKeyboardResponse,
+    stimulus: [movies[0]],
+    prompt: "<p>Press a space bar at the times at which you feel like a new scene is starting; these are points in the movie when there is a major change in topic, location, time, etc. Each \'scene\'  should be between 10 seconds and 3 minutes long.</p>",
+    width: 1200,
+    height: 1200,
+    autoplay: true,
+    response_feedback: true, //Clara added
+    response_allowed_while_playing: true,
+    response_ends_trial: false,
+    trial_ends_after_video: true,
+  }
+
+var trial_2 = {
+    type: jsPsychVideoKeyboardResponse,
+    stimulus: [movies[1]],
+    prompt: "<p>Press a space bar at the times at which you feel like a new scene is starting; these are points in the movie when there is a major change in topic, location, time, etc. Each \'scene\'  should be between 10 seconds and 3 minutes long.</p>",
+    width: 1200,
+    height: 1200,
+    autoplay: true,
+    response_feedback: true, //Clara added
+    response_allowed_while_playing: true,
+    response_ends_trial: false,
+    trial_ends_after_video: true,
+  }
+  
+var trial_3 = {
+    type: jsPsychVideoKeyboardResponse,
+    stimulus: [movies[2]],
+    prompt: "<p>Press a space bar at the times at which you feel like a new scene is starting; these are points in the movie when there is a major change in topic, location, time, etc. Each \'scene\'  should be between 10 seconds and 3 minutes long.</p>",
+    width: 1200,
+    height: 1200,
+    autoplay: true,
+    response_feedback: true, //Clara added
+    response_allowed_while_playing: true,
+    response_ends_trial: false,
+    trial_ends_after_video: true,
+  }
+
+var trial_4 = {
+    type: jsPsychVideoKeyboardResponse,
+    stimulus: [movies[3]],
+    prompt: "<p>Press a space bar at the times at which you feel like a new scene is starting; these are points in the movie when there is a major change in topic, location, time, etc. Each \'scene\'  should be between 10 seconds and 3 minutes long.</p>",
+    width: 1200,
+    height: 1200,
+    autoplay: true,
+    response_feedback: true, //Clara added
+    response_allowed_while_playing: true,
+    response_ends_trial: false,
+    trial_ends_after_video: true,
+  } 
+
+var movie1_ = [movies[0].substring(0, movies[0].length - 4)]
+var movie2_ = [movies[1].substring(0, movies[1].length - 4)];
+var movie3_ = [movies[2].substring(0, movies[2].length - 4)];
+var movie4_ = [movies[3].substring(0, movies[3].length - 4)];
+
+
+characters = []
+charact = []
+for(let i = 0; i < defined_questions[0][movie1_].length; i++){
+          characters.push('<p>Time left: <span id="clock">1:00</span> </p>' + 'Please give at least three adjectives to describe ' + `<strong>`+ defined_questions[0][movie1_][i]+ `</strong>` + '.' + '</p> Use the formatting indicated below.'),//+ '<input type="text" id="adj1" name="response" size="10" />' + '<input type="text" id="adj2" name="response" size="10" />' + '<input type="text" id="adj3" name="response" size="10" />')}
+          charact.push('<strong>'+ defined_questions[0][movie1_][i] + '</strong>')}
+characters = shuffleArray(characters) // CHECK THIS
+charact = shuffleArray(charact)
+var character_describe_trial1_0 = {
+  type: jsPsychSurveyText,
+  on_load: clock_function,
+  data: {movie: movie1_},
+  questions: [
+    {prompt: characters[0], name: defined_questions[0][movie1_][0], placeholder: '1)xxx   2)xxx   3)xxx', required: true}
+  ]
+         }
+var character_describe_trial1_1 = {
+  type: jsPsychSurveyText,
+  on_load: clock_function,
+  data: {movie: movie1_},
+  questions: [
+    {prompt: characters[1], name: defined_questions[0][movie1_][1], placeholder: '1)xxx   2)xxx   3)xxx', required: true}
+  ]
+         }
+
+var character_describe_trial1_2 = {
+  type: jsPsychSurveyText,
+  on_load: clock_function,
+  data: {movie: movie1_},
+  questions: [
+    {prompt: characters[2], name: defined_questions[0][movie1_][2], placeholder: '1)xxx   2)xxx   3)xxx', required: true}
+  ]
+         }
+var character_describe_trial1_3 = {
+  type: jsPsychSurveyText,
+  on_load: clock_function,
+  data: {movie: movie1_},
+  questions: [
+    {prompt: characters[3], name: defined_questions[0][movie1_][3], placeholder: '1)xxx   2)xxx   3)xxx', required: true}
+  ]
+         }
+//movie2
+
+characters_2= []
+charact2 = []
+for(let i = 0; i < defined_questions[0][movie2_].length; i++){
+            characters_2.push('<p>Time left: <span id="clock">1:00</span> </p>' + 'Please give at least three adjectives to describe ' + `<strong>`+ defined_questions[0][movie2_][i]+ `</strong>` + '.' + '</p> Use the formatting indicated below.'),//+ '<input type="text" id="adj1" name="response" size="10" />' + '<input type="text" id="adj2" name="response" size="10" />' + '<input type="text" id="adj3" name="response" size="10" />')}
+            charact2.push('<strong>'+defined_questions[0][movie2_][i] + `</strong>`)}
+
+characters_2 = shuffleArray(characters_2) // CHECK THIS
+charact2 = shuffleArray(charact2)
+characters_2 = shuffleArray(characters_2) // CHECK THIS
+var character_describe_trial2_0 = {
+  type: jsPsychSurveyText,
+  on_load: clock_function,
+  data: {movie: movie2_},
+  questions: [
+    {prompt: characters_2[0], name: defined_questions[0][movie2_][0], placeholder: '1)xxx   2)xxx   3)xxx', required: true}
+  ]
+         }
+var character_describe_trial2_1 = {
+  type: jsPsychSurveyText,
+  on_load: clock_function,
+  data: {movie: movie2_},
+  questions: [
+    {prompt: characters_2[1], name: defined_questions[0][movie2_][1], placeholder: '1)xxx   2)xxx   3)xxx', required: true}
+  ]
+         }
+
+var character_describe_trial2_2 = {
+  type: jsPsychSurveyText,
+  on_load: clock_function,
+  data: {movie: movie2_},
+  questions: [
+    {prompt: characters_2[2], name: defined_questions[0][movie2_][2], placeholder: '1)xxx   2)xxx   3)xxx', required: true}
+  ]
+         }
+var character_describe_trial2_3 = {
+  type: jsPsychSurveyText,
+  on_load: clock_function,
+  data: {movie: movie2_},
+  questions: [
+    {prompt: characters_2[3], name: defined_questions[0][movie2_][3], placeholder: '1)xxx   2)xxx   3)xxx', required: true}
+  ]
+         }
+//movie3
+characters_3= []
+charact3 = []
+for(let i = 0; i < defined_questions[0][movie3_].length; i++){
+            characters_3.push('<p>Time left: <span id="clock">1:00</span> </p>' + 'Please give at least three adjectives to describe ' + `<strong>`+ defined_questions[0][movie3_][i]+ `</strong>` + '.' + '</p> Use the formatting indicated below.'),//+ '<input type="text" id="adj1" name="response" size="10" />' + '<input type="text" id="adj2" name="response" size="10" />' + '<input type="text" id="adj3" name="response" size="10" />')}
+            charact3.push('<strong>' + defined_questions[0][movie3_][i] + `</strong>`)}
+
+characters_3 = shuffleArray(characters_3) // CHECK THIS
+charact3 = shuffleArray(charact3)
+var character_describe_trial3_0 = {
+  type: jsPsychSurveyText,
+  on_load: clock_function,
+  data: {movie: movie3_},
+  questions: [
+    {prompt: characters_3[0], name: defined_questions[0][movie3_][0], placeholder: '1)xxx   2)xxx   3)xxx', required: true}
+  ]
+         }
+var character_describe_trial3_1 = {
+  type: jsPsychSurveyText,
+  on_load: clock_function,
+  data: {movie: movie3_},
+  questions: [
+    {prompt: characters_3[1], name: defined_questions[0][movie3_][1], placeholder: '1)xxx   2)xxx   3)xxx', required: true}
+  ]
+         }
+
+var character_describe_trial3_2 = {
+  type: jsPsychSurveyText,
+  on_load: clock_function,
+  data: {movie: movie3_},
+  questions: [
+    {prompt: characters_3[2], name: defined_questions[0][movie3_][2], placeholder: '1)xxx   2)xxx   3)xxx', required: true}
+  ]
+         }
+var character_describe_trial3_3 = {
+  type: jsPsychSurveyText,
+  data: {movie: movie3_},
+  on_load: clock_function,
+  questions: [
+    {prompt: characters_3[3], name: defined_questions[0][movie3_][3], placeholder: '1)xxx   2)xxx   3)xxx', required: true}
+  ]
+         }
+//movie4
+characters_4= []
+charact4 = []
+for(let i = 0; i < defined_questions[0][movie4_].length; i++){
+            characters_4.push('<p>Time left: <span id="clock">1:00</span> </p>' + 'Please give at least three adjectives to describe ' + `<strong>`+ defined_questions[0][movie4_][i]+ `</strong>` + '.' + '</p> Use the formatting indicated below.'),//+ '<input type="text" id="adj1" name="response" size="10" />' + '<input type="text" id="adj2" name="response" size="10" />' + '<input type="text" id="adj3" name="response" size="10" />')}
+            charact4.push(`<strong>`+ defined_questions[0][movie4_][i] + `</strong>`)}
+
+characters_4 = shuffleArray(characters_4) // CHECK THIS
+charact4 = shuffleArray(charact4)
+var character_describe_trial4_0 = {
+  type: jsPsychSurveyText,
+  on_load: clock_function,
+  data: {movie: movie4_},
+  questions: [
+    {prompt: characters_4[0], name: defined_questions[0][movie4_][0], placeholder: '1)xxx   2)xxx   3)xxx', required: true}
+  ]
+         }
+var character_describe_trial4_1 = {
+  type: jsPsychSurveyText,
+  data: {movie: movie4_},
+  on_load: clock_function,
+  questions: [
+    {prompt: characters_4[1], name: defined_questions[0][movie4_][1], placeholder: '1)xxx   2)xxx   3)xxx', required: true}
+  ]
+         }
+
+var character_describe_trial4_2 = {
+  type: jsPsychSurveyText,
+  data: {movie: movie4_},
+  on_load: clock_function,
+  questions: [
+    {prompt: characters_4[2], name: defined_questions[0][movie4_][2], placeholder: '1)xxx   2)xxx   3)xxx', required: true}
+  ]
+         }
+var character_describe_trial4_3 = {
+  type: jsPsychSurveyText,
+  data: {movie: movie4_},
+  on_load: clock_function,
+  questions: [
+    {prompt: characters_4[3], name: defined_questions[0][movie4_][3], placeholder: '1)xxx   2)xxx   3)xxx', required: true}
+  ]
+         }
+
+
+// Multiple Choice Questions
+var MC_questions_mov1_1 = {
+  on_load: function(){
+          var wait_time = 12000 //when want the full range // in milliseconds
+          var start_time = performance.now();
+          //document.querySelector('button').disabled = true;
+          var interval = setInterval(function(){
+          var time_left = wait_time - (performance.now() - start_time);
+          var minutes = Math.floor(time_left / 1000 / 60);
+          var seconds = Math.floor((time_left - minutes*1000*60)/1000);
+          var seconds_str = seconds.toString().padStart(2,'0');
+          document.querySelector('#clock').innerHTML = minutes + ':' + seconds_str
+          if(time_left <= 0){
+              document.querySelector('#clock').innerHTML = "0:00";
+              //document.querySelector('button').disabled = false;
+              clearInterval(interval);
+    }
+    },
+    250)
+          }, //set to 3 minutes
+  type: jsPsychSurveyMultiChoice,
+  data: {movie: movie1_},
+  questions: [
+    {
+      prompt: '<p>Time left: <span id="clock">1:00</span> </p>' + '<strong>' + defined_questions[1][movie1_][0] + '</strong>',  // indexing based on location in the questions.js sheet 
+      name: 'Question1-movie1', 
+      options: [defined_questions[2][movie1_][0], defined_questions[2][movie1_][1], defined_questions[2][movie1_][2]], 
+      required: true,
+      horizontal: true
+    }, 
+  ],
+};
+var MC_questions_mov1_2 = {
+  on_load: function(){
+          var wait_time = 12000 //when want the full range // in milliseconds
+          var start_time = performance.now();
+          //document.querySelector('button').disabled = true;
+          var interval = setInterval(function(){
+          var time_left = wait_time - (performance.now() - start_time);
+          var minutes = Math.floor(time_left / 1000 / 60);
+          var seconds = Math.floor((time_left - minutes*1000*60)/1000);
+          var seconds_str = seconds.toString().padStart(2,'0');
+          document.querySelector('#clock').innerHTML = minutes + ':' + seconds_str
+          if(time_left <= 0){
+              document.querySelector('#clock').innerHTML = "0:00";
+              //document.querySelector('button').disabled = false;
+              clearInterval(interval);
+    }
+    },
+    250)
+          }, //set to 3 minutes
+  type: jsPsychSurveyMultiChoice,
+  data: {movie: movie1_},
+  questions: [
+    {
+      prompt: '<p><strong>' + defined_questions[3][movie1_][0] + '</strong> </p>', 
+      name: 'Question2-movie1', 
+      options: [defined_questions[4][movie1_][0], defined_questions[4][movie1_][1], defined_questions[4][movie1_][2]], 
+      required: true,
+      horizontal: true
+    }, 
+  ],
+};
+var MC_questions_mov1_3 = {
+  on_load: function(){
+          var wait_time = 12000 //when want the full range // in milliseconds
+          var start_time = performance.now();
+          //document.querySelector('button').disabled = true;
+          var interval = setInterval(function(){
+          var time_left = wait_time - (performance.now() - start_time);
+          var minutes = Math.floor(time_left / 1000 / 60);
+          var seconds = Math.floor((time_left - minutes*1000*60)/1000);
+          var seconds_str = seconds.toString().padStart(2,'0');
+          document.querySelector('#clock').innerHTML = minutes + ':' + seconds_str
+          if(time_left <= 0){
+              document.querySelector('#clock').innerHTML = "0:00";
+              //document.querySelector('button').disabled = false;
+              clearInterval(interval);
+    }
+    },
+    250)
+          }, //set to 3 minutes
+  type: jsPsychSurveyMultiChoice,
+  data: {movie: movie1_},
+  questions: [
+  {
+      prompt: '<p><strong>' + defined_questions[5][movie1_][0] + '</strong></p>', 
+      name: 'Question3-movie1', 
+      options: [defined_questions[6][movie1_][0], defined_questions[6][movie1_][1], defined_questions[6][movie1_][2]], 
+      required: true,
+      horizontal: true
+    }, 
+  ],
+};
+var MC_questions_mov1_4 = {
+  on_load: function(){
+          var wait_time = 12000 //when want the full range // in milliseconds
+          var start_time = performance.now();
+          //document.querySelector('button').disabled = true;
+          var interval = setInterval(function(){
+          var time_left = wait_time - (performance.now() - start_time);
+          var minutes = Math.floor(time_left / 1000 / 60);
+          var seconds = Math.floor((time_left - minutes*1000*60)/1000);
+          var seconds_str = seconds.toString().padStart(2,'0');
+          document.querySelector('#clock').innerHTML = minutes + ':' + seconds_str
+          if(time_left <= 0){
+              document.querySelector('#clock').innerHTML = "0:00";
+              //document.querySelector('button').disabled = false;
+              clearInterval(interval);
+    }
+    },
+    250)
+          }, //set to 3 minutes
+  type: jsPsychSurveyMultiChoice,
+  data: {movie: movie1_},
+  questions: [
+  {
+      prompt: '<p><strong>' + defined_questions[7][movie1_][0] + '</strong></p>', 
+      name: 'Question4-movie1', 
+      options: [defined_questions[8][movie1_][0], defined_questions[8][movie1_][1], defined_questions[8][movie1_][2]], 
+      required: true,
+      horizontal: true
+    } 
+  ],
+};
+
+
+
+/// movie2
+var MC_questions_mov2_1 = {
+  type: jsPsychSurveyMultiChoice,
+  on_load: function(){
+          var wait_time = 48000  //when want the full range // in milliseconds
+          var start_time = performance.now();
+          //document.querySelector('button').disabled = true;
+          var interval = setInterval(function(){
+          var time_left = wait_time - (performance.now() - start_time);
+          var minutes = Math.floor(time_left / 1000 / 60);
+          var seconds = Math.floor((time_left - minutes*1000*60)/1000);
+          var seconds_str = seconds.toString().padStart(2,'0');
+          document.querySelector('#clock').innerHTML = minutes + ':' + seconds_str
+          if(time_left <= 0){
+              document.querySelector('#clock').innerHTML = "0:00";
+              //document.querySelector('button').disabled = false;
+              clearInterval(interval);
+    }
+    },
+    250)
+          }, 
+  data: {movie: movie2_},
+  questions: [
+
+    {
+      prompt: '<p>Time left: <span id="clock">1:00</span> </p>' + '<strong>' + defined_questions[1][movie2_][0] + '</strong>',  // indexing based on location in the questions.js sheet 
+      name: 'Question1-movie2', 
+      options: [defined_questions[2][movie2_][0], defined_questions[2][movie2_][1], defined_questions[2][movie2_][2]], 
+      required: true,
+      horizontal: true
+    }
+  ],
+};
+var MC_questions_mov2_2 = {
+  type: jsPsychSurveyMultiChoice,
+  on_load: function(){
+          var wait_time = 48000  //when want the full range // in milliseconds
+          var start_time = performance.now();
+          //document.querySelector('button').disabled = true;
+          var interval = setInterval(function(){
+          var time_left = wait_time - (performance.now() - start_time);
+          var minutes = Math.floor(time_left / 1000 / 60);
+          var seconds = Math.floor((time_left - minutes*1000*60)/1000);
+          var seconds_str = seconds.toString().padStart(2,'0');
+          document.querySelector('#clock').innerHTML = minutes + ':' + seconds_str
+          if(time_left <= 0){
+              document.querySelector('#clock').innerHTML = "0:00";
+              //document.querySelector('button').disabled = false;
+              clearInterval(interval);
+    }
+    },
+    250)
+          }, 
+  data: {movie: movie2_},
+  questions: [
+
+  {
+      prompt: '<p><strong>' + defined_questions[3][movie2_][0] + '</strong></p>', 
+      name: 'Question2-movie2', 
+      options: [defined_questions[4][movie2_][0], defined_questions[4][movie2_][1], defined_questions[4][movie2_][2]], 
+      required: true,
+      horizontal: true
+    }
+  ],
+};
+var MC_questions_mov2_3 = {
+  type: jsPsychSurveyMultiChoice,
+  on_load: function(){
+          var wait_time = 48000  //when want the full range // in milliseconds
+          var start_time = performance.now();
+          //document.querySelector('button').disabled = true;
+          var interval = setInterval(function(){
+          var time_left = wait_time - (performance.now() - start_time);
+          var minutes = Math.floor(time_left / 1000 / 60);
+          var seconds = Math.floor((time_left - minutes*1000*60)/1000);
+          var seconds_str = seconds.toString().padStart(2,'0');
+          document.querySelector('#clock').innerHTML = minutes + ':' + seconds_str
+          if(time_left <= 0){
+              document.querySelector('#clock').innerHTML = "0:00";
+              //document.querySelector('button').disabled = false;
+              clearInterval(interval);
+    }
+    },
+    250)
+          }, 
+  data: {movie: movie2_},
+  questions: [
+
+  {
+      prompt: '<p><strong>' + defined_questions[5][movie2_][0] + '</strong></p>', 
+      name: 'Question3-movie2', 
+      options: [defined_questions[6][movie2_][0], defined_questions[6][movie2_][1], defined_questions[6][movie2_][2]], 
+      required: true,
+      horizontal: true
+    }
+  ],
+};
+
+var MC_questions_mov2_4 = {
+  type: jsPsychSurveyMultiChoice,
+  on_load: function(){
+          var wait_time = 48000  //when want the full range // in milliseconds
+          var start_time = performance.now();
+          //document.querySelector('button').disabled = true;
+          var interval = setInterval(function(){
+          var time_left = wait_time - (performance.now() - start_time);
+          var minutes = Math.floor(time_left / 1000 / 60);
+          var seconds = Math.floor((time_left - minutes*1000*60)/1000);
+          var seconds_str = seconds.toString().padStart(2,'0');
+          document.querySelector('#clock').innerHTML = minutes + ':' + seconds_str
+          if(time_left <= 0){
+              document.querySelector('#clock').innerHTML = "0:00";
+              //document.querySelector('button').disabled = false;
+              clearInterval(interval);
+    }
+    },
+    250)
+          }, 
+  data: {movie: movie2_},
+  questions: [
+
+  {
+      prompt: '<p><strong>' + defined_questions[7][movie2_][0] + '</strong></p>', 
+      name: 'Question4-movie2', 
+      options: [defined_questions[8][movie2_][0], defined_questions[8][movie2_][1], defined_questions[8][movie2_][2]], 
+      required: true,
+      horizontal: true
+    } 
+  ],
+};
+
+
+
+
+
+///movie3
+
+var MC_questions_mov3_1 = {
+  type: jsPsychSurveyMultiChoice,
+  data: {movie: movie3_},
+  on_load: function(){
+          var wait_time = 48000  //when want the full range // in milliseconds
+          var start_time = performance.now();
+          //document.querySelector('button').disabled = true;
+          var interval = setInterval(function(){
+          var time_left = wait_time - (performance.now() - start_time);
+          var minutes = Math.floor(time_left / 1000 / 60);
+          var seconds = Math.floor((time_left - minutes*1000*60)/1000);
+          var seconds_str = seconds.toString().padStart(2,'0');
+          document.querySelector('#clock').innerHTML = minutes + ':' + seconds_str
+          if(time_left <= 0){
+              document.querySelector('#clock').innerHTML = "0:00";
+              //document.querySelector('button').disabled = false;
+              clearInterval(interval);
+    }
+    },
+    250)
+          }, 
+  
+  questions: [
+
+    {
+      prompt: '<p>Time left: <span id="clock">1:00</span> </p>' + '<strong>' + defined_questions[1][movie3_][0]  + '</strong>',  // indexing based on location in the questions.js sheet 
+      name: 'Question1-movie3', 
+      options: [defined_questions[2][movie3_][0], defined_questions[2][movie3_][1], defined_questions[2][movie3_][2]], 
+      required: true,
+      horizontal: true,
+      required: true
+    }
+  ],
+};
+var MC_questions_mov3_2 = {
+  type: jsPsychSurveyMultiChoice,
+  data: {movie: movie3_},
+  on_load: function(){
+          var wait_time = 48000  //when want the full range // in milliseconds
+          var start_time = performance.now();
+          //document.querySelector('button').disabled = true;
+          var interval = setInterval(function(){
+          var time_left = wait_time - (performance.now() - start_time);
+          var minutes = Math.floor(time_left / 1000 / 60);
+          var seconds = Math.floor((time_left - minutes*1000*60)/1000);
+          var seconds_str = seconds.toString().padStart(2,'0');
+          document.querySelector('#clock').innerHTML = minutes + ':' + seconds_str
+          if(time_left <= 0){
+              document.querySelector('#clock').innerHTML = "0:00";
+              //document.querySelector('button').disabled = false;
+              clearInterval(interval);
+    }
+    },
+    250)
+          }, 
+  
+  questions: [
+
+  {
+      prompt: '<p><strong>' + defined_questions[3][movie3_][0] + '</strong></p>', 
+      name: 'Question2-movie3', 
+      options: [defined_questions[4][movie3_][0], defined_questions[4][movie3_][1], defined_questions[4][movie3_][2]], 
+      required: true,
+      horizontal: true,
+      required: true
+    }
+  ],
+};
+var MC_questions_mov3_3 = {
+  type: jsPsychSurveyMultiChoice,
+  data: {movie: movie3_},
+  on_load: function(){
+          var wait_time = 48000  //when want the full range // in milliseconds
+          var start_time = performance.now();
+          //document.querySelector('button').disabled = true;
+          var interval = setInterval(function(){
+          var time_left = wait_time - (performance.now() - start_time);
+          var minutes = Math.floor(time_left / 1000 / 60);
+          var seconds = Math.floor((time_left - minutes*1000*60)/1000);
+          var seconds_str = seconds.toString().padStart(2,'0');
+          document.querySelector('#clock').innerHTML = minutes + ':' + seconds_str
+          if(time_left <= 0){
+              document.querySelector('#clock').innerHTML = "0:00";
+              //document.querySelector('button').disabled = false;
+              clearInterval(interval);
+    }
+    },
+    250)
+          }, 
+  
+  questions: [
+
+  {
+      prompt: '<p><strong>' + defined_questions[5][movie3_][0] + '</strong></p>', 
+      name: 'Question3-movie3', 
+      options: [defined_questions[6][movie3_][0], defined_questions[6][movie3_][1], defined_questions[6][movie3_][2]], 
+      required: true,
+      horizontal: true,
+      required: true
+  }
+  ],
+};
+var MC_questions_mov3_4 = {
+  type: jsPsychSurveyMultiChoice,
+  data: {movie: movie3_},
+  on_load: function(){
+          var wait_time = 48000  //when want the full range // in milliseconds
+          var start_time = performance.now();
+          //document.querySelector('button').disabled = true;
+          var interval = setInterval(function(){
+          var time_left = wait_time - (performance.now() - start_time);
+          var minutes = Math.floor(time_left / 1000 / 60);
+          var seconds = Math.floor((time_left - minutes*1000*60)/1000);
+          var seconds_str = seconds.toString().padStart(2,'0');
+          document.querySelector('#clock').innerHTML = minutes + ':' + seconds_str
+          if(time_left <= 0){
+              document.querySelector('#clock').innerHTML = "0:00";
+              //document.querySelector('button').disabled = false;
+              clearInterval(interval);
+    }
+    },
+    250)
+          }, 
+  
+  questions: [
+
+  {
+    prompt: '<p><strong>' + defined_questions[7][movie3_][0] + '</strong></p>', 
+      name: 'Question4-movie3', 
+      options: [defined_questions[8][movie3_][0], defined_questions[8][movie3_][1], defined_questions[8][movie3_][2]], 
+      required: true,
+      horizontal: true,
+      required: true
+  }
+  ],
+};
+
+
+
+
+
+///movie4
+
+var MC_questions_mov4_1 = {
+  type: jsPsychSurveyMultiChoice,
+  data: {movie: movie4_},
+  on_load: function(){
+          var wait_time = 48000  //when want the full range // in milliseconds
+          var start_time = performance.now();
+          //document.querySelector('button').disabled = true;
+          var interval = setInterval(function(){
+          var time_left = wait_time - (performance.now() - start_time);
+          var minutes = Math.floor(time_left / 1000 / 60);
+          var seconds = Math.floor((time_left - minutes*1000*60)/1000);
+          var seconds_str = seconds.toString().padStart(2,'0');
+          document.querySelector('#clock').innerHTML = minutes + ':' + seconds_str
+          if(time_left <= 0){
+              document.querySelector('#clock').innerHTML = "0:00";
+              //document.querySelector('button').disabled = false;
+              clearInterval(interval);
+    }
+    },
+    250)
+          }, 
+  questions: [
+  
+    {
+      prompt: '<p>Time left: <span id="clock">1:00</span> </p>' + '<strong>' + defined_questions[1][movie4_][0] + '</strong>',  // indexing based on location in the questions.js sheet 
+      name: 'Question1-movie4', 
+      options: [defined_questions[2][movie4_][0], defined_questions[2][movie4_][1], defined_questions[2][movie4_][2]], 
+      required: true,
+      horizontal: true
+    }],};
+
+var MC_questions_mov4_2 = {
+  type: jsPsychSurveyMultiChoice,
+  data: {movie: movie4_},
+  on_load: function(){
+          var wait_time = 48000  //when want the full range // in milliseconds
+          var start_time = performance.now();
+          //document.querySelector('button').disabled = true;
+          var interval = setInterval(function(){
+          var time_left = wait_time - (performance.now() - start_time);
+          var minutes = Math.floor(time_left / 1000 / 60);
+          var seconds = Math.floor((time_left - minutes*1000*60)/1000);
+          var seconds_str = seconds.toString().padStart(2,'0');
+          document.querySelector('#clock').innerHTML = minutes + ':' + seconds_str
+          if(time_left <= 0){
+              document.querySelector('#clock').innerHTML = "0:00";
+              //document.querySelector('button').disabled = false;
+              clearInterval(interval);
+    }
+    },
+    250)
+          }, 
+  questions: [
+  
+    {
+      prompt: '<p><strong>' + defined_questions[3][movie4_][0] + '</strong></p>', 
+      name: 'Question2-movie4', 
+      options: [defined_questions[4][movie4_][0], defined_questions[4][movie4_][1], defined_questions[4][movie4_][2]], 
+      required: true,
+      horizontal: true
+    }],};
+
+var MC_questions_mov4_3 = {
+  type: jsPsychSurveyMultiChoice,
+  data: {movie: movie4_},
+  on_load: function(){
+          var wait_time = 48000  //when want the full range // in milliseconds
+          var start_time = performance.now();
+          //document.querySelector('button').disabled = true;
+          var interval = setInterval(function(){
+          var time_left = wait_time - (performance.now() - start_time);
+          var minutes = Math.floor(time_left / 1000 / 60);
+          var seconds = Math.floor((time_left - minutes*1000*60)/1000);
+          var seconds_str = seconds.toString().padStart(2,'0');
+          document.querySelector('#clock').innerHTML = minutes + ':' + seconds_str
+          if(time_left <= 0){
+              document.querySelector('#clock').innerHTML = "0:00";
+              //document.querySelector('button').disabled = false;
+              clearInterval(interval);
+    }
+    },
+    250)
+          }, 
+  questions: [
+  
+    {
+      prompt: '<p><strong>' + defined_questions[5][movie4_][0] + '</strong></p>', 
+      name: 'Question3-movie4', 
+      options: [defined_questions[6][movie4_][0], defined_questions[6][movie4_][1], defined_questions[6][movie4_][2]], 
+      required: true,
+      horizontal: true
+    }],};
+var MC_questions_mov4_4 = {
+  type: jsPsychSurveyMultiChoice,
+  data: {movie: movie4_},
+  on_load: function(){
+          var wait_time = 48000  //when want the full range // in milliseconds
+          var start_time = performance.now();
+          //document.querySelector('button').disabled = true;
+          var interval = setInterval(function(){
+          var time_left = wait_time - (performance.now() - start_time);
+          var minutes = Math.floor(time_left / 1000 / 60);
+          var seconds = Math.floor((time_left - minutes*1000*60)/1000);
+          var seconds_str = seconds.toString().padStart(2,'0');
+          document.querySelector('#clock').innerHTML = minutes + ':' + seconds_str
+          if(time_left <= 0){
+              document.querySelector('#clock').innerHTML = "0:00";
+              //document.querySelector('button').disabled = false;
+              clearInterval(interval);
+    }
+    },
+    250)
+          }, 
+  questions: [
+  
+    {
+      prompt: '<p><strong>' + defined_questions[7][movie4_][0] + '</strong></p>', 
+      name: 'Question4-movie4', 
+      options: [defined_questions[8][movie4_][0], defined_questions[8][movie4_][1], defined_questions[8][movie4_][2]], 
+      required: true,
+      horizontal: true
+    }],};
+
+
+
+
+
+
+/// Emotions
+emotList = ['happy', 'sad', 'angry', 'frustrated', 'surprised', 'tense']
+emotList = shuffleArray(emotList)
+
+var emot_scale = [
+  "Not at all", 
+  "Almost none, or very little", 
+  "Less than normal", 
+  "A normal amount", 
+  "More than normal",
+  "A lot",
+  "The whole, or almost the whole, film"
+];
+var emotion_scale_fill_out = {
+  type: jsPsychSurveyLikert,
+  on_load: function(){
+          var wait_time = 60000  //when want the full range // in milliseconds
+          var start_time = performance.now();
+          //document.querySelector('button').disabled = true;
+          var interval = setInterval(function(){
+          var time_left = wait_time - (performance.now() - start_time);
+          var minutes = Math.floor(time_left / 1000 / 60);
+          var seconds = Math.floor((time_left - minutes*1000*60)/1000);
+          var seconds_str = seconds.toString().padStart(2,'0');
+          document.querySelector('#clock').innerHTML = minutes + ':' + seconds_str
+          if(time_left <= 0){
+              document.querySelector('#clock').innerHTML = "0:00";
+              //document.querySelector('button').disabled = false;
+              clearInterval(interval);
+    }
+    },
+    250)
+          }, 
+  questions: [
+    //{prompt: '<p>Time left: <span id="clock">1:00</span> </p>' + '<strong>' , name: 'clock'},
+    {prompt: "How " + '<strong>' + emotList[0] + '</strong>' + " did you feel while watching this video?", name: emotList[0], labels: emot_scale, required: true},
+    {prompt: "How " + '<strong>' + emotList[1] + '</strong>' + " did you feel while watching this video?", name: emotList[0], labels: emot_scale, required: true},
+    {prompt: "How " + '<strong>' + emotList[2] + '</strong>' + " did you feel while watching this video?", name: emotList[0], labels: emot_scale, required: true},
+    {prompt: "How " + '<strong>' + emotList[3] + '</strong>' + " did you feel while watching this video?", name: emotList[0], labels: emot_scale, required: true},
+    {prompt: "How " + '<strong>' + emotList[4] + '</strong>' + " did you feel while watching this video?", name: emotList[0], labels: emot_scale, required: true},
+    {prompt: "How " + '<strong>' + emotList[5] + '</strong>' + " did you feel while watching this video?", name: emotList[0], labels: emot_scale, required: true}
+  ],
+  randomize_question_order: false
+};
+var arou_scale = [
+  "Very calm", 
+  "Somewhat calm", 
+  "Slightly calm", 
+  "Neutral", 
+  "Slightly exciting",
+  "Somewhat exciting",
+  "Very exciting"
+];
+
+
+var arousal = {
+  type: jsPsychSurveyLikert,
+  on_load: function(){
+          var wait_time = 10000//when want the full range // in milliseconds
+          var start_time = performance.now();
+          //document.querySelector('button').disabled = true;
+          var interval = setInterval(function(){
+          var time_left = wait_time - (performance.now() - start_time);
+          var minutes = Math.floor(time_left / 1000 / 60);
+          var seconds = Math.floor((time_left - minutes*1000*60)/1000);
+          var seconds_str = seconds.toString().padStart(2,'0');
+          document.querySelector('#clock').innerHTML = minutes + ':' + seconds_str
+          if(time_left <= 0){
+              document.querySelector('#clock').innerHTML = "0:00";
+              //document.querySelector('button').disabled = false;
+              clearInterval(interval);
+    }
+    },
+    250)
+          }, 
+  questions: [
+  {prompt: '<p>Time left: <span id="clock">1:00</span> </p>' +"What was the overall <strong> intensity </strong>of the previous video, on a scale from calm to exciting? Note that \'intensity\' here is independent of valence -- it\'s simply the intensity of the emotions depicted, regardless of whether they were positive or negative.", name: 'arousal', labels: arou_scale, required: true}],
+}
+
+var vale_scale = [
+"Very negative", 
+  "Somewhat negative", 
+  "Slightly negative", 
+  "Neither positive or negative", 
+  "Slightly positive",
+  "Somewhat positive",
+  "Very positive"
+]
+
+var valence = {
+	type: jsPsychSurveyLikert,
+  on_load: function(){
+          var wait_time = 10000 //when want the full range // in milliseconds
+          var start_time = performance.now();
+          //document.querySelector('button').disabled = true;
+          var interval = setInterval(function(){
+          var time_left = wait_time - (performance.now() - start_time);
+          var minutes = Math.floor(time_left / 1000 / 60);
+          var seconds = Math.floor((time_left - minutes*1000*60)/1000);
+          var seconds_str = seconds.toString().padStart(2,'0');
+          document.querySelector('#clock').innerHTML = minutes + ':' + seconds_str
+          if(time_left <= 0){
+              document.querySelector('#clock').innerHTML = "0:00";
+              //document.querySelector('button').disabled = false;
+              clearInterval(interval);
+    }
+    },
+    250)
+          }, 
+	questions: [{prompt: '<p>Time left: <span id="clock">1:00</span> </p>' + 'What was the overall <strong> valence </strong> of the previous video, on a scale from <strong> positive to negative </strong>? \'Positive\' here might mean happy or comforting, while \'negative\' might mean sad or angry.', name:'valence', labels: vale_scale, required: true}]
+}
+
+var engag_scale = [
+ "Extremely unengaging", 
+ "Somewhat unengaging",
+  "Slightly unengaging", 
+  "Neutral", 
+  "Slightly engaging",
+	"Somewhat engaging", 
+	"Extremely engaging"
+]
+
+var engagement= {
+  type: jsPsychSurveyLikert,
+  on_load: function(){
+          var wait_time = 10000 //when want the full range // in milliseconds
+          var start_time = performance.now();
+          //document.querySelector('button').disabled = true;
+          var interval = setInterval(function(){
+          var time_left = wait_time - (performance.now() - start_time);
+          var minutes = Math.floor(time_left / 1000 / 60);
+          var seconds = Math.floor((time_left - minutes*1000*60)/1000);
+          var seconds_str = seconds.toString().padStart(2,'0');
+          document.querySelector('#clock').innerHTML = minutes + ':' + seconds_str
+          if(time_left <= 0){
+              document.querySelector('#clock').innerHTML = "0:00";
+              //document.querySelector('button').disabled = false;
+              clearInterval(interval);
+    }
+    },
+    250)
+          }, 
+  questions: [
+  {prompt: '<p>Time left: <span id="clock">1:00</span> </p>' + "How <strong> engaging </strong> did you find this video?", name: 'engagement', labels: engag_scale, required: true}],
+}
+
+var char_scale = [
+  "Dislike Strongly", 
+  "Dislike", 
+  "Slightly Dislike", 
+  "Neutral",
+  "Slightly Like",
+  "Like",
+  "Like strongly"
+]
+
+var charID_scale = [
+"Didn't identify at all", 
+  "Didn't identify well", 
+  "Didn't identify much", 
+  "Not sure", 
+  "Identified a little bit",
+  "Identified somewhat",
+  "Identified strongly"]
+
+
+// character ratings
+// movie1
+var getCharScale_trial1_0 = {
+  type: jsPsychSurveyLikert,
+  questions: [
+    {prompt: "How much do you <strong> like </strong> "+charact[0]+"?", name: charact[0], labels: char_scale, required: true},
+  ]};
+  var getCharScale_trial1_1 = {
+  type: jsPsychSurveyLikert,
+  questions: [
+    {prompt: "How much do you <strong> like </strong>  "+charact[1]+"?", name: charact[1], labels: char_scale, required: true},
+  ]};
+  var getCharScale_trial1_2 = {
+  type: jsPsychSurveyLikert,
+  questions: [
+    {prompt: "How much do you <strong> like </strong> "+charact[2]+"?", name: charact[2], labels: char_scale, required: true},
+  ]};
+  var getCharScale_trial1_3 = {
+  type: jsPsychSurveyLikert,
+  questions: [
+    {prompt: "How much do you <strong> like </strong>  "+charact[3]+"?", name: charact[3], labels: char_scale, required: true},
+  ]};
+// mov 2
+  var getCharScale_trial2_0 = {
+  type: jsPsychSurveyLikert,
+  questions: [
+    {prompt: "How much do you <strong> like </strong> "+charact2[0]+"?", name: charact2[0], labels: char_scale, required: true},
+  ]};
+  var getCharScale_trial2_1 = {
+  type: jsPsychSurveyLikert,
+  questions: [
+    {prompt: "How much do you <strong> like </strong>  "+charact2[1]+"?", name: charact2[1], labels: char_scale, required: true},
+  ]};
+  var getCharScale_trial2_2 = {
+  type: jsPsychSurveyLikert,
+  questions: [
+    {prompt: "How much do you <strong> like </strong>  "+charact2[2]+"?", name: charact2[2], labels: char_scale, required: true},
+  ]};
+  var getCharScale_trial2_3 = {
+  type: jsPsychSurveyLikert,
+  questions: [
+    {prompt: "How much do you <strong> like </strong>  "+charact2[3]+"?", name: charact3[3], labels: char_scale, required: true},
+  ]};
+// mov 3
+var getCharScale_trial3_0 = {
+  type: jsPsychSurveyLikert,
+  questions: [
+    {prompt: "How much do you <strong> like </strong>  "+charact3[0]+"?", name: charact3[0], labels: char_scale, required: true},
+  ]};
+  var getCharScale_trial3_1 = {
+  type: jsPsychSurveyLikert,
+  questions: [
+    {prompt: "How much do you <strong> like </strong>  "+charact3[1]+"?", name: charact3[1], labels: char_scale, required: true},
+  ]};
+  var getCharScale_trial3_2 = {
+  type: jsPsychSurveyLikert,
+  questions: [
+    {prompt: "How much do you <strong> like </strong> "+charact3[2]+"?", name: charact3[2], labels: char_scale, required: true},
+  ]};
+  var getCharScale_trial3_3 = {
+  type: jsPsychSurveyLikert,
+  questions: [
+    {prompt: "How much do you <strong> like </strong>  "+charact3[3]+"?", name: charact3[3], labels: char_scale, required: true},
+  ]};
+// mov 4
+var getCharScale_trial4_0 = {
+  type: jsPsychSurveyLikert,
+  questions: [
+    {prompt: "How much do you <strong> like </strong>  "+charact4[0]+"?", name: charact4[0], labels: char_scale, required: true},
+  ]};
+  var getCharScale_trial4_1 = {
+  type: jsPsychSurveyLikert,
+  questions: [
+    {prompt: "How much do you <strong> like </strong> "+charact4[1]+"?", name: charact4[1], labels: char_scale, required: true},
+  ]};
+  var getCharScale_trial4_2 = {
+  type: jsPsychSurveyLikert,
+  questions: [
+    {prompt: "How much do you <strong> like </strong> "+charact4[2]+"?", name: charact4[2], labels: char_scale, required: true},
+  ]};
+  var getCharScale_trial4_3 = {
+  type: jsPsychSurveyLikert,
+  questions: [
+    {prompt: "How much do you <strong> like </strong>  "+charact4[3]+"?", name: charact4[3], labels: char_scale, required: true},
+  ]};
+
+//////////////
+
+
+var getCharID_trial1_0 = {
+  type: jsPsychSurveyLikert,
+  questions: [
+    {prompt: "How much did you <strong> identify </strong> with "+charact[0]+"?", name: charact[0], labels: charID_scale, required: true},
+  ]};
+  var getCharID_trial1_1 = {
+  type: jsPsychSurveyLikert,
+  questions: [
+    {prompt: "How much did you <strong> identify </strong> with "+charact[1]+"?", name: charact[1], labels: charID_scale, required: true},
+  ]};
+  var getCharID_trial1_2 = {
+  type: jsPsychSurveyLikert,
+  questions: [
+    {prompt: "How much did you <strong> identify </strong> with "+charact[2]+"?", name: charact[2], labels: charID_scale, required: true},
+  ]};
+  var getCharID_trial1_3 = {
+  type: jsPsychSurveyLikert,
+  questions: [
+    {prompt: "How much did you <strong> identify </strong> with "+charact[3]+"?", name: charact[3], labels: charID_scale, required: true},
+  ]};
+// mov 2
+  var getCharID_trial2_0 = {
+  type: jsPsychSurveyLikert,
+  questions: [
+    {prompt: "How much did you <strong> identify </strong> with "+charact2[0]+"?", name: charact2[0], labels: charID_scale, required: true},
+  ]};
+  var getCharID_trial2_1 = {
+  type: jsPsychSurveyLikert,
+  questions: [
+    {prompt: "How much did you <strong> identify </strong> with "+charact2[1]+"?", name: charact2[1], labels: charID_scale, required: true},
+  ]};
+  var getCharID_trial2_2 = {
+  type: jsPsychSurveyLikert,
+  questions: [
+    {prompt: "How much did you <strong> identify </strong> with "+charact2[2]+"?", name: charact2[2], labels: charID_scale, required: true},
+  ]};
+  var getCharID_trial2_3 = {
+  type: jsPsychSurveyLikert,
+  questions: [
+    {prompt: "How much did you <strong> identify </strong> with "+charact2[3]+"?", name: charact2[3], labels: charID_scale, required: true},
+  ]};
+
+
+// mov 3
+var getCharID_trial3_0 = {
+  type: jsPsychSurveyLikert,
+  questions: [
+    {prompt: "How much did you <strong> identify </strong>with "+charact3[0]+"?", name: charact3[0], labels: charID_scale, required: true},
+  ]};
+  var getCharID_trial3_1 = {
+  type: jsPsychSurveyLikert,
+  questions: [
+    {prompt: "How much did you <strong> identify </strong>with "+charact3[1]+"?", name: charact3[1], labels: charID_scale, required: true},
+  ]};
+  var getCharID_trial3_2 = {
+  type: jsPsychSurveyLikert,
+  questions: [
+    {prompt: "How much did you <strong> identify </strong>with "+charact3[2]+"?", name: charact3[2], labels: charID_scale, required: true},
+  ]};
+  var getCharID_trial3_3 = {
+  type: jsPsychSurveyLikert,
+  questions: [
+    {prompt: "How much did you <strong> identify </strong>with "+charact3[3]+"?", name: charact3[3], labels: charID_scale, required: true},
+  ]};
+
+
+// mov 4
+var getCharID_trial4_0 = {
+  type: jsPsychSurveyLikert,
+  questions: [
+    {prompt: "How much did you <strong> identify </strong>with "+charact4[0]+"?", name: charact4[0], labels: charID_scale, required: true},
+  ]};
+  var getCharID_trial4_1 = {
+  type: jsPsychSurveyLikert,
+  questions: [
+    {prompt: "How much did you <strong> identify </strong>with "+charact4[1]+"?", name: charact4[1], labels: charID_scale, required: true},
+  ]};
+  var getCharID_trial4_2 = {
+  type: jsPsychSurveyLikert,
+  questions: [
+    {prompt: "How much did you <strong> identify </strong> with "+charact4[2]+"?", name: charact4[2], labels: charID_scale, required: true},
+  ]};
+  var getCharID_trial4_3 = {
+  type: jsPsychSurveyLikert,
+  questions: [
+    {prompt: "How much did you <strong> identify </strong>with "+charact4[3]+"?", name: charact4[3], labels: charID_scale, required: true},
+  ]};
+
+
+
+
+
+/////////////////////////////////////
+/////////////////////////////////////
+/////////////////////////////////////
+/////////////////////////////////////
+/////////////////////////////////////
+timeline=[]
+timeline.push(participant)
+
+timeline.push(welcome,practice_trial1, practice_mov , practice_trial2)
+
+
+
+timeline.push(pre_trial, experiment_starting, movie_instructions,trial_1, free_recall_instructions, init_mic, free_recall)
+if (movie1_[0] === 'Defeat'){
+    timeline.push(character_describe_trial1_0, character_describe_trial1_1, character_describe_trial1_2)
+}
+if (movie1_[0] === 'Lemonade'){
+    timeline.push(character_describe_trial1_0)
+}
+if (movie1_[0] === 'Growth'){ 
+    timeline.push(character_describe_trial1_0, character_describe_trial1_1, character_describe_trial1_2, character_describe_trial1_3)
+}
+if (movie1_[0] === 'Iteration'){
+    timeline.push(character_describe_trial1_0, character_describe_trial1_1)
+}
+timeline.push(multiple_choice_instructions ,MC_questions_mov1_1, MC_questions_mov1_2, MC_questions_mov1_3, MC_questions_mov1_4)
+timeline.push(emotion_choice_instructions,emotion_scale_fill_out, arousal, valence, engagement, character_ID_instructions)
+
+if (movie1_[0] === 'Defeat'){
+    timeline.push(getCharScale_trial1_0, getCharScale_trial1_1, getCharScale_trial1_2)
+    timeline.push(getCharID_trial1_0, getCharID_trial1_1, getCharID_trial1_2)
+
+}
+if (movie1_[0] === 'Lemonade'){
+    timeline.push(getCharScale_trial1_0)
+    timeline.push(getCharID_trial1_0)
+
+}
+if (movie1_[0] === 'Growth'){ 
+    timeline.push(getCharScale_trial1_0, getCharScale_trial1_1, getCharScale_trial1_2, getCharScale_trial1_3)
+    timeline.push(getCharID_trial1_0, getCharID_trial1_1, getCharID_trial1_2, getCharID_trial1_3)
+
+}
+if (movie1_[0] === 'Iteration'){
+    timeline.push(getCharScale_trial1_0, getCharScale_trial1_1)
+    timeline.push(getCharID_trial1_0, getCharID_trial1_1)
+
+}
+
+//// MOVIE 2
+
+timeline.push(between_trials, movie_instructions,trial_2, free_recall_instructions, init_mic, free_recall)
+if (movie2_[0] === 'Defeat'){
+    timeline.push(character_describe_trial2_0, character_describe_trial2_1, character_describe_trial2_2)
+}
+if (movie2_[0] === 'Lemonade'){
+    timeline.push(character_describe_trial2_0)
+}
+if (movie2_[0] === 'Growth'){ 
+    timeline.push(character_describe_trial2_0, character_describe_trial2_1, character_describe_trial2_2, character_describe_trial2_3)
+}
+if (movie2_[0] === 'Iteration'){
+    timeline.push(character_describe_trial2_0, character_describe_trial2_1)
+}
+timeline.push(multiple_choice_instructions ,MC_questions_mov2_1, MC_questions_mov2_2, MC_questions_mov2_3, MC_questions_mov2_4)
+timeline.push(emotion_choice_instructions,emotion_scale_fill_out, arousal, valence, engagement, character_ID_instructions)
+
+if (movie2_[0] === 'Defeat'){
+    timeline.push(getCharScale_trial2_0, getCharScale_trial2_1, getCharScale_trial2_2)
+    timeline.push(getCharID_trial2_0, getCharID_trial2_1, getCharID_trial2_2)
+
+}
+if (movie2_[0] === 'Lemonade'){
+    timeline.push(getCharScale_trial2_0)
+    timeline.push(getCharID_trial2_0)
+
+}
+if (movie2_[0] === 'Growth'){ 
+    timeline.push(getCharScale_trial2_0, getCharScale_trial2_1, getCharScale_trial2_2, getCharScale_trial2_3)
+    timeline.push(getCharID_trial2_0, getCharID_trial2_1, getCharID_trial2_2, getCharID_trial2_3)
+
+}
+if (movie2_[0] === 'Iteration'){
+    timeline.push(getCharScale_trial2_0, getCharScale_trial2_1)
+    timeline.push(getCharID_trial2_0, getCharID_trial2_1)
+
+}
+
+
+
+// MOVIE 3
+//var movie3_ = [movies[2].substring(0, movies[2].length - 4)];
+// characters = []
+// for(let i = 0; i < defined_questions[0][movie3_].length; i++){
+//             characters.push('<p>Time left: <span id="clock">1:00</span> </p>' + 'Please give at least three adjectives to describe ' + `<strong>`+ defined_questions[0][movie3_][i]+ `</strong>` + '.' + '</p> Use the formatting indicated below.')}//+ '<input type="text" id="adj1" name="response" size="10" />' + '<input type="text" id="adj2" name="response" size="10" />' + '<input type="text" id="adj3" name="response" size="10" />')}
+timeline.push(between_trials,movie_instructions,trial_3, free_recall_instructions, init_mic, free_recall)
+if (movie3_[0] === 'Defeat'){
+    timeline.push(character_describe_trial3_0, character_describe_trial3_1, character_describe_trial3_2)
+}
+if (movie3_[0] === 'Lemonade'){
+    timeline.push(character_describe_trial3_0)
+}
+if (movie3_[0] === 'Growth'){ 
+    timeline.push(character_describe_trial3_0, character_describe_trial3_1, character_describe_trial3_2, character_describe_trial3_3)
+}
+if (movie3_[0] === 'Iteration'){
+    timeline.push(character_describe_trial3_0, character_describe_trial3_1)
+}
+timeline.push(multiple_choice_instructions ,MC_questions_mov3_1, MC_questions_mov3_2, MC_questions_mov3_3, MC_questions_mov3_4 )
+timeline.push(emotion_choice_instructions,emotion_scale_fill_out, arousal, valence, engagement, character_ID_instructions)
+
+if (movie3_[0] === 'Defeat'){
+    timeline.push(getCharScale_trial3_0, getCharScale_trial3_1, getCharScale_trial3_2)
+    timeline.push(getCharID_trial3_0, getCharID_trial3_1, getCharID_trial3_2)
+
+}
+if (movie3_[0] === 'Lemonade'){
+    timeline.push(getCharScale_trial3_0)
+    timeline.push(getCharID_trial3_0)
+
+}
+if (movie3_[0] === 'Growth'){ 
+    timeline.push(getCharScale_trial3_0, getCharScale_trial3_1, getCharScale_trial3_2, getCharScale_trial3_3)
+    timeline.push(getCharID_trial3_0, getCharID_trial3_1, getCharID_trial3_2, getCharID_trial3_3)
+
+}
+if (movie3_[0] === 'Iteration'){
+    timeline.push(getCharScale_trial3_0, getCharScale_trial3_1)
+    timeline.push(getCharID_trial3_0, getCharID_trial3_1)
+
+}
+
+
+
+// MOVIE 4
+//var movie4_ = [movies[3].substring(0, movies[3].length - 4)];
+// characters = []
+// for(let i = 0; i < defined_questions[0][movie4_].length; i++){
+//             characters.push('<p>Time left: <span id="clock">1:00</span> </p>' + 'Please give at least three adjectives to describe ' + `<strong>`+ defined_questions[0][movie4_][i]+ `</strong>` + '.' + '</p> Use the formatting indicated below.')}//+ '<input type="text" id="adj1" name="response" size="10" />' + '<input type="text" id="adj2" name="response" size="10" />' + '<input type="text" id="adj3" name="response" size="10" />')}
+timeline.push(between_trials, movie_instructions,trial_4, free_recall_instructions, init_mic, free_recall)
+if (movie4_[0] === 'Defeat'){
+    timeline.push(character_describe_trial4_0, character_describe_trial4_1, character_describe_trial4_2)
+}
+if (movie4_[0] === 'Lemonade'){
+    timeline.push(character_describe_trial4_0)
+}
+if (movie4_[0] === 'Growth'){ 
+    timeline.push(character_describe_trial4_0, character_describe_trial4_1, character_describe_trial4_2, character_describe_trial4_3)
+}
+if (movie4_[0] === 'Iteration'){
+    timeline.push(character_describe_trial4_0, character_describe_trial4_1)
+}
+timeline.push(multiple_choice_instructions, MC_questions_mov4_1, MC_questions_mov4_2, MC_questions_mov4_3, MC_questions_mov4_4)
+timeline.push(emotion_choice_instructions,emotion_scale_fill_out, arousal, valence, engagement, character_ID_instructions)
+
+if (movie4_[0] === 'Defeat'){
+    timeline.push(getCharScale_trial4_0, getCharScale_trial4_1, getCharScale_trial4_2)
+    timeline.push(getCharID_trial4_0, getCharID_trial4_1, getCharID_trial4_2)
+
+}
+if (movie4_[0] === 'Lemonade'){
+    timeline.push(getCharScale_trial4_0)
+    timeline.push(getCharID_trial4_0)
+
+}
+if (movie4_[0] === 'Growth'){ 
+    timeline.push(getCharScale_trial4_0, getCharScale_trial4_1, getCharScale_trial4_2, getCharScale_trial4_3)
+    timeline.push(getCharID_trial4_0, getCharID_trial4_1, getCharID_trial4_2, getCharID_trial4_3)
+
+}
+if (movie4_[0] === 'Iteration'){
+    timeline.push(getCharScale_trial4_0, getCharScale_trial4_1)
+    timeline.push(getCharID_trial4_0, getCharID_trial4_1)
+
+}
+
+
+
+
+
+timeline.push(demographic_trial, ty, init_mic, debrief)
+
+jsPsych.run(timeline)
+
+//     </script>
+// </html>
+
+
