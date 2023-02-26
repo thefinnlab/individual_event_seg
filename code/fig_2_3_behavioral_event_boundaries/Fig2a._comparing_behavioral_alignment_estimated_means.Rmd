@@ -1,0 +1,130 @@
+---
+title: "fig2b_overall_alignment_behavioral"
+output: html_document
+date: '2023-02-26'
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+```{r}
+library(lme4)
+library(lmerTest)
+library(MASS)
+library(psycho)
+library(psycho)
+library(report)
+library(Rcpp)
+library(ggplot2)
+library(tidyverse)
+library(ggsignif)
+library(nlme)
+library(ggeffects)
+library(margins)
+library(emmeans)
+
+```
+
+
+```{r}
+dd  <- read.csv('alignment_behavioral_memory_individual_memory_by_pair_sub.csv')
+```
+
+##  setting up code with crossed-random effects as inspired by Chen (2017). Thank you to Gang Chen for the help! 
+```{r}
+dd$mem <- dd$memory_sub1 + dd$memory_sub2
+m <- lmer(val~movie+mem+(1|sub1)+(1|sub2), data=dd)
+anova(m)
+#w is setting up different contrasts
+w <- matrix(c(1, 0, 0, 0, 0, 
+
+              1, 1, 0, 0, 0, 
+
+              1, 0, 1, 0, 0, 
+
+              1, 0, 0, 1, 0, 
+
+              0, 0, 0, -1,0, 
+
+              0, 1, 0, -1,0, 
+
+              0, 0, 1, -1,0, 
+
+              0,-1, 0, 0, 0, 
+
+              0,-1, 1, 0, 0, 
+
+              0, 0, 1, 0, 0),
+
+     nrow = 10, ncol = 5, byrow = TRUE)
+
+# The v vector is created by multiplying the w matrix by the estimated coefficients from the linear mixed-effects model. The se vector is initialized with large values and is then updated in a for loop. In each iteration of the loop, the standard error of the corresponding contrast is calculated using the vcov() function to obtain the covariance matrix of the model coefficients and the sqrt() function to take the square root of the corresponding diagonal element of this matrix.
+
+#the v vector obtained by v <- t(w%*%coef(summary(m))[,1]) gives the marginal means after accounting for the random effects in the model.
+
+v   <- t(w%*%coef(summary(m))[,1])
+
+
+se  <- rep(1e8, 10)
+
+for(ii in 1:10) se[ii] <- as.numeric(sqrt(t(w[ii,]) %*% vcov(m) %*% w[ii,]))
+
+
+#the t function is used to transpose matrices. Specifically, the function transposes the matrix resulting from the multiplication of w and the coefficient estimates returned by the summary function applied to the output of the lmer function.
+
+#The multiplication of w and the coefficient estimates extracts the estimated effect sizes for each of the ten conditions specified in w. The resulting vector is then transposed using the t function, so that the estimates are arranged in a row rather than a column.
+
+res <- t(rbind(v, sqrt(2)*se, v-2*sqrt(2)*se, v+2*sqrt(2)*se))
+
+colnames(res) <- c('mean', 'se', '95% lb', '95% ub')
+
+rownames(res) <- c('defeat', 'growth', 'iteration', 'lemonade', 'defeat.lemonade', 'growth.lemonade', 'iteration.lemonade', 'defeat.growth', 'iteration.growth', 'iteration.defeat')
+
+print(res, digits=2)
+
+
+
+se <- se*sqrt(2*n_pairs-2)/sqrt(n_pairs-2)
+
+res <- t(rbind(v, se, v-2*se, v+2*se, v/se, n_pairs-2, pt(abs(v/se), n_pairs-2, lower.tail = F)*2))
+
+colnames(res) <- c('mean', 'se', '96% lb', '95% ub', 'T', 'DF', 'p')
+rownames(res) <- c('defeat', 'growth', 'iteration', 'lemonade', 'defeat.lemonade', 'growth.lemonade', 'iteration.lemonade', 'defeat.growth', 'iteration.growth', 'iteration.defeat')
+
+
+df <- data.frame(
+  contrast = rownames(res),
+  mean = res[, "mean"],
+  lower = res[,"mean"] - res[,"se"], #res[, "95% lb"],
+  upper = res[,"mean"] + res[,"se"]) #res[, "95% ub"])
+#getting just the movies
+df <- df[1:4, ]
+df$contrast <- factor(df$contrast, levels = c("iteration", "defeat", "growth", "lemonade"))
+
+```
+
+```{r}
+# plot a chart with error bars
+p <- ggplot(df, aes(x = contrast, y = mean,ymin = lower, ymax = upper,color = contrast)) +
+  geom_errorbar(width = 0.3,size = .5) +
+  geom_point(aes(shape = NULL), size = 3) +
+  ylab('')+
+  xlab('')+
+   scale_color_manual(values = c("iteration" ='#5D4B7D', "defeat" = '#B8385D',"growth" = '#009780', "lemonade" = '#E59F38'))+
+    scale_x_discrete(labels = c("Ite.", "Def.", "Gro.", "Lem.")) +
+    theme_minimal() +
+    theme(axis.text.x = element_text(family = "DejaVu Sans", size = 9,color = c('#5D4B7D', '#B8385D', '#009780', '#E59F38')),
+          axis.text.y = element_text(family = "DejaVu Sans", size = 6),
+        axis.title = element_text(family = "DejaVu Sans", size = 13),
+        axis.ticks = element_line(size = 1),
+        axis.ticks.length = unit(.1, "cm"),
+        legend.position="none",
+        panel.grid.minor = element_blank(),
+        panel.grid.major = element_blank())
+
+p
+  
+
+```

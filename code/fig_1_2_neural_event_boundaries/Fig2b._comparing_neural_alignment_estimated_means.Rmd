@@ -1,0 +1,97 @@
+---
+title: "fig2a_overall_alignment_neural"
+output: html_document
+date: '2023-02-26'
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(lme4)
+library(lmerTest)
+library(MASS)
+library(psycho)
+library(psycho)
+library(report)
+library(Rcpp)
+library(ggplot2)
+library(tidyverse)
+library(ggsignif)
+library(nlme)
+library(ggeffects)
+library(margins)
+library(emmeans)
+```
+
+```{r}
+library(extrafont)
+# Import the DejaVu Sans font
+font_import(pattern = "DejaVu Sans")
+
+# Register the imported fonts with R
+loadfonts()
+
+
+```
+
+```{r}
+df_neural_intercept <- read.csv('median_alignment_neural_by_node.csv')
+
+```
+
+```{r}
+# fit your lmer model
+m <- lmer(intercept.alignment ~ movie + (1|node), data=df_neural_intercept, REML=FALSE)
+anova(m)
+
+
+
+# Compute the EMMs and obtain pairwise comparisons between them
+emm_results <- emmeans(m, ~ movie)
+# display the results
+summary(emm_results)
+
+#This will give you the EMMs for each level of the variable movie, which are a measure of the expected value of the response variable (intercept.alignment) for each level of the predictor variable movie, while holding the other predictor variables at their mean or reference level.
+emm_pairs <- pairs(emm_results)
+
+# Conduct  pairwise EMMs
+results <- summary(emm_pairs, infer = TRUE)
+
+
+
+pvalues <- formatC(results[,"p.value"], format = "f", digits = 10)
+pvalues
+
+
+```
+
+
+```{r}
+p<- ggplot(emm_df, aes(x = movie, y = emmean, ymin = emmean-SE, ymax = emmean+SE, color = movie)) +
+  #geom_boxplot(outlier.shape = NA) +
+  geom_errorbar(width = 0.3,size = .5) +
+  geom_point(aes(shape = NULL), size = 3) +
+  #ylab("Estimated Marginal Means (EMMs)") +
+  ylab('')+
+  xlab('')+
+  #xlab("Movie") +
+  scale_color_manual(values = c("MOV1" ='#5D4B7D', "MOV2" = '#B8385D',"MOV3" = '#009780', "MOV4" = '#E59F38'))+
+    scale_x_discrete(labels = c("Ite.", "Def.", "Gro.", "Lem.")) +
+    theme_minimal() +
+    theme(axis.text.x = element_text(family = "DejaVu Sans", size = 9,color = c('#5D4B7D', '#B8385D', '#009780', '#E59F38')),
+          axis.text.y = element_text(family = "DejaVu Sans", size = 6),
+        axis.title = element_text(family = "DejaVu Sans", size = 13),
+        axis.ticks = element_line(size = 1),
+        axis.ticks.length = unit(.1, "cm"),
+        legend.position="none",
+        panel.grid.minor = element_blank(),
+        panel.grid.major = element_blank())
+
+p
+
+
+
+
+```
