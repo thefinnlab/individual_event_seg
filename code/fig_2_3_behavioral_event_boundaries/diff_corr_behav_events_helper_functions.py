@@ -1,6 +1,7 @@
 import seaborn as sns
 import numpy as np
 from matplotlib.colors import LinearSegmentedColormap
+from matplotlib.pyplot import figure
 
 ''' Defining the custom colormap'''
 Rd_Bu_mod = LinearSegmentedColormap.from_list('Rd_Bu_mod', (
@@ -51,8 +52,9 @@ def pval_star(p):
         star = '****'
     return star
 
-def dist_plots(x, y, ax, num, c, pval_dict_diff, label=None, color=None, cmap=None, **kwargs):
-    ''' Used to plot the density plots to show the difference between alignment values between the movies'''
+def dist_plots_new(x, y,num, c, pval_dict_diff, label=None, color=None, cmap=None, **kwargs):
+    
+    figure(figsize=(12, 9), dpi=600)
     
     if (x.name=='growth'):
         col_x=get_color(x.name)
@@ -78,44 +80,55 @@ def dist_plots(x, y, ax, num, c, pval_dict_diff, label=None, color=None, cmap=No
         r = pval_dict_diff[(y.name,x.name)]['beta']
         p = pval_dict_diff[(y.name,x.name)]['p']   
     
+
     
-    g2 = sns.distplot(x, hist = False, kde = True,color=col_x,
-                 kde_kws = {'linewidth': 5},ax=ax)
-    g2 = sns.distplot(y, hist = False, kde = True,color=col_y,
-                 kde_kws = {'linewidth': 5},ax=ax)
+    diff = np.array(x)-np.array(y)
     
+    g2 = sns.distplot(diff, hist = False, kde = True,color='black',
+                 kde_kws = {'linewidth': 3})
+
     #FILL IN HERE
     # Get the two lines from the axes to generate shading
     l1 = g2.lines[0]
-    l2 = g2.lines[1]
-    g2.axvline(x=0,color='grey',linewidth=2)
+    g2.axvline(x=0,color='k',linewidth=4,linestyle='--')
 
     # Get the xy data from the lines so that we can shade
     x1 = l1.get_xydata()[:,0]
     y1 = l1.get_xydata()[:,1]
-    x2 = l2.get_xydata()[:,0]
-    y2 = l2.get_xydata()[:,1]
-    g2.fill_between(x1,y1, color=col_x, alpha=0.05)
-    g2.fill_between(x2,y2, color=col_y, alpha=0.05)
+    
 
-    g2.set_xlim(-5,10.5)
-    g2.set_ylim(0,.35)
+    g2.fill_between(x1[(x1<0)],y1[(x1<0)], color=col_y, alpha=0.4)
+    g2.fill_between(x1[(x1>0)],y1[(x1>0)], color=col_x, alpha=0.4)
+    
+    #g2.text(4,.30,f'p = {np.round(p,2)} \ndiff (y-x) = {np.round(r,2)}')
+    #p = pval_star(p)
+    #g2.text(2,.29,f'{p}',fontsize=32,ha='center')
+
+    g2.set_xlim(-10.5,10.5)
+    g2.set_ylim(0,.25)
     
     
-    g2.set_xticks(np.arange(-5, 11, 5))
+    g2.set_xticks(np.arange(-10, 11, 5))
     g2.set_yticks(np.arange(0, .35, .2))
-    g2.set_xticklabels(np.arange(-5, 11, 5),fontsize=32)
+    g2.set_xticklabels(np.arange(-10, 11, 5),fontsize=32)
     g2.set_yticklabels(np.arange(0, .35, .2),fontsize=32)
     
     if (c==2 and num==0):
+        #g2.set_xlabel(xlabel=f'{x.name}',fontsize = 20.0, color=col_x)
+        #g2.set_ylabel(ylabel=f'{y.name}',fontsize = 20.0, color=col_y)
         g2.set(xlabel=None)
         g2.set(ylabel=None)
+        g2.set(yticklabels=[])
+        g2.set(xticklabels=[])
     elif c==2:
+        #g2.set_xlabel(xlabel=f'Z-score \n {x.name}',fontsize = 20.0, color = col_x)
+        #g2.set_xlabel(xlabel=f'{x.name}',fontsize = 20.0, color = col_x)
         g2.set(xlabel=None)
         g2.set(ylabel=None)
         g2.set(yticklabels=[])
         g2.set(xticklabels=[])
     elif num==0:
+        #g2.set_ylabel(ylabel=f'{y.name}',fontsize = 20.0, color=col_y)
 
         g2.set(yticklabels=[])
         g2.set(xticklabels=[])
@@ -128,23 +141,6 @@ def dist_plots(x, y, ax, num, c, pval_dict_diff, label=None, color=None, cmap=No
         g2.set(ylabel=None)
         g2.tick_params(bottom=False)
         
+    
 
-def mat_plots(x, ax, num, label=None, color=None, cmap=None, **kwargs):
-    '''Used to just plot the alignment matrix on the diagonal'''
-    
-    '''get the name'''
-    mov=x.name
-    if num==3:
-        val = True
-    else:
-        val = False
-    
-    matchz_node =  np.load('../../data/fig_3_5_behavioral_event_boundaries/behavioral_match_z/match_z_%s_all4movie.npy' %mov)
-    g2 = sns.heatmap(matchz_node, ax=ax,yticklabels=False,xticklabels=False,vmax=10, vmin=-10,cmap=Rd_Bu_mod,cbar=val)
-
-    g2.set(xticklabels=[])  
-    g2.set(xlabel=None)
-    g2.set(ylabel=None)
-    g2.tick_params(bottom=False)
-    
-    
+    ''' REMOVE AX IF GOING TO USE PAIRPLOT'''
