@@ -13,7 +13,7 @@ fsaverage = datasets.fetch_surf_fsaverage()
 
 
 def linear_model_USE(mov):
-    r_p_df = pd.read_csv('../../data/fig_6_USE_event_boundaries/_partial_mantel_outputs/' + f'{mov}_mantel_r_p_R_generated.csv')
+    r_p_df = pd.read_csv('../../data/fig_3_USE_event_boundaries/_partial_mantel_outputs/' + f'{mov}_mantel_r_p_R_generated.csv')
     
     node_OG = r_p_df['rval']
     pval_list = r_p_df['pval']

@@ -17,7 +17,7 @@ library(readr)
 ## START HERE
 ```{r}
 
-info_table <- read.csv("../../data/fig_6_USE_event_boundaries/_partial_mantel_inputs/iteration_nodes_USE_matchz.csv")
+info_table <- read.csv("../../data/fig_3_USE_event_boundaries/_partial_mantel_inputs/iteration_nodes_USE_matchz.csv")
 
 p_list <- vector("list", 100)
 r_list <- vector("list", 100)
