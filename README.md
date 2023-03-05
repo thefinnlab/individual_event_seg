@@ -1,5 +1,11 @@
 # individual_event_seg
-This repository contains code and experimental materials for the publication "Individual variability in neural event segmentation reflects stimulus content and interpretation"
+This repository contains code and experimental materials for the publication "Individual differences in neural event segmentation of continuous experiences"
+
+<p align="center">
+  <a href="https://www.biorxiv.org/content/10.1101/2022.09.09.507003v2">
+    <img src="https://img.shields.io/badge/BioArXiv-Preprint-cf1d35.svg" alt="BioArXiv preprint">
+  </a>
+</p>
 
 The structure of this directory is as follows:
 - There is a data and code folder that are typically labeled by their corresponding figure (see below). 
