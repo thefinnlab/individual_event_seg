@@ -2,8 +2,8 @@
 This repository contains code and experimental materials for the publication "Individual differences in neural event segmentation of continuous experiences"
 
 <p align="center">
-  <a href="https://www.biorxiv.org/content/10.1101/2022.09.09.507003v2">
-    <img src="https://img.shields.io/badge/BioArXiv-Preprint-cf1d35.svg" alt="BioArXiv preprint">
+  <a href="[https://www.biorxiv.org/content/10.1101/2022.09.09.507003v2](https://watermark-silverchair-com.dartmouth.idm.oclc.org/bhad106.pdf?token=AQECAHi208BE49Ooan9kkhW_Ercy7Dm3ZL_9Cf3qfKAc485ysgAAA3IwggNuBgkqhkiG9w0BBwagggNfMIIDWwIBADCCA1QGCSqGSIb3DQEHATAeBglghkgBZQMEAS4wEQQMJAeMojp7npGAMv5GAgEQgIIDJWUGZOZ8PMP9bD2z_98JLnpv-xHiFhg0TSXX0krn5TlfDZym60hmrYZJ6fxNEs-YLvETzeWUdnXTdzYs4y7l_jj_duMTJpoK_hsx_ig5-EtK8dF-2Fj-t6vyAxSTBpP7_KX9XYnORuNIB0XqWO01U9D-kDI5SM8xX88tkTt4_6qcxQXK4UYfyIPTsI6UzKrD9J43ltL76DNz7RZ0P0vOFKaCCigCv8jQEhz6KhCnvAiUaOJIFWRh60bPdrH2qhzizRkUFFi0xOIiimRIxBZA_b2n7DOWtBtJbbEhuSB8Wp5N7zcC4YTdgC1OsdH8Y7G8qMTcDf6ei4h4ln-g7Gn2huJzLIimy-0aJWXpugGg8FpP0hlCOqQyeH4fzcc23Tof9Z7YSh7ZFUKe3vy4AVHdYYsutV9NfmJaYXZge1gepJYf3eMZ5o5ymt2H8njq69h5aPGt-Cum_pvI4_mneL-LmqMeCPl6M7tZ6qHj458jMOdCXjADR3d7ACc0CTvsmPOIXWlDKP_4vtsDKil79mZoPfJc2g5RmfkMjbkPS-qdMf8czVpH3lAjsG7qzsHYrNu-M9VwI80fI0kwszMnAou5AxtXv8TPwxzDiGSKMI6aVM3HUY48r608-Uc5Zeww4E31UfOcvG4cKHh-ENjZGzerGEzVE61NbuHGeuYqc4He-eNoi9byqTephpQu6B9lGtyt_prmu2LKGaWkecct4pETOjYc5v8nbYWy5-vyPzD6mrha-_xgbDctWg9wZO4GMAVJsoDTI7NqDQb0FMtQyAOYpWsHqYA1bZbMOUr52keSYnSoIGcMI-mtsYM1SJjRvbvH-BQcKrych-AGinaYnfIXm3977z3IqXWG1p9UvEwBlRbMXK_tVdcSiUkIIC8lK2HZpJjfblzEbQJf_ZE3S8h5SQ5vRC0Ss4CeIrScAMsRO9nkvjFd4SacaQbWs9AIu-FPhzTR01GckD4vXNvq_s5vbCM9y5-LnFTx7gqfpr9JSxTxVYj5mrIN2iYY4HZoZ1RYwT2hIaume1zWzhraEm0r7kqSVXLCxfL2pLM1D1lrcy1C7WaGtYI)">
+    <img src="[https://img.shields.io/badge/BioArXiv-Preprint-cf1d35.svg](https://user-images.githubusercontent.com/5334175/36446632-b3700ecc-1660-11e8-8f63-4b2b350d8111.png)" alt="Paper">
   </a>
 </p>
 
