@@ -2,6 +2,7 @@
 This repository contains code and experimental materials for the publication "Individual differences in neural event segmentation of continuous experiences"
 
 Please cite this paper if you use the code presented here:
+
 Sava-Segal, C., Richards, C., Leung, M., & Finn, E. S. (2023). Individual differences in neural event segmentation of continuous experiences. Cerebral Cortex, bhad106. https://doi.org/10.1093/cercor/bhad106![image](https://github.com/user-attachments/assets/3fb8bea0-7237-43ab-a1af-652ed7458d1e)
 
 
